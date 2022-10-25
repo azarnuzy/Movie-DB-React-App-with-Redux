@@ -1,6 +1,7 @@
 import React from 'react';
-import { category, movieType, tvType } from '../api/tmdbApi';
-import MovieLists, { GenreList } from '../components/MovieLists';
+import { category, movieType } from '../api/tmdbApi';
+import { GenreList } from '../components/GenreList';
+import MovieLists from '../components/MovieLists';
 import Slider from '../components/Slider';
 import TitleSection from '../components/TitleSection';
 
@@ -9,10 +10,14 @@ export default function Home() {
     <div>
       <Slider />
       <TitleSection section={'homePopularMovie'} destination={'allMovie'}>
-        Popular Movie
+        Popular Movies
       </TitleSection>
       <MovieLists category={category.movie} type={movieType.popular} />
-      <TitleSection section={'category'} destination={'genres'}>
+      <TitleSection section={''} destination={'allMovie'}>
+        Genres Movies
+      </TitleSection>
+      <GenreList category={category.movie} />
+      {/* <TitleSection section={'category'} destination={'genres'}>
         Movie Category
       </TitleSection>
       <GenreList category={category.movie} type={'movie'} />
@@ -23,7 +28,7 @@ export default function Home() {
       <TitleSection section={'category'} destination={'genres'}>
         TV Category
       </TitleSection>
-      <GenreList category={category.tv} type={'tv'} />
+      <GenreList category={category.tv} type={'tv'} /> */}
     </div>
   );
 }

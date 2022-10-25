@@ -28,6 +28,7 @@ const genresSlice = createSlice({
       })
       .addCase(fetchGenres.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        console.log(action.payload.data);
         state.genres = action.payload.data;
       })
       .addCase(fetchGenres.rejected, (state, action) => {
@@ -38,8 +39,7 @@ const genresSlice = createSlice({
 });
 
 export const selectAllGenres = (state) => {
-  console.log(state);
-  //   return state.genres.genres;
+  return state.genres.genres;
 };
 export const getGenresStatus = (state) => state.genres.status;
 export const getGenresError = (state) => state.genres.error;

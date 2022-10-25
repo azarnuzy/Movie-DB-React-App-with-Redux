@@ -2,19 +2,12 @@ import React from 'react';
 import { AiFillStar } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import apiConfig from '../api/apiConfig';
-import { category as cate } from '../api/tmdbApi';
 import noImage from '../images/noImage.png';
-export default function MovieCard({ item, category, mediaType }) {
-  let pathCategory = mediaType;
-  if (mediaType === undefined || mediaType === null) {
-    pathCategory = category;
-    if (category === 'top_rated') {
-      pathCategory = 'movie';
-    }
-  }
-  const link = '/' + cate[pathCategory] + '/' + item.id;
 
-  let bg = apiConfig.w500Image(item.poster_path || item.backdrop_path);
+export default function MovieCard({ item, category }) {
+  const link = '/movie/' + item._id;
+
+  let bg = apiConfig.w500Image(item.poster);
 
   if (bg.indexOf('undefined') >= 0 || bg.indexOf('null') >= 0) {
     bg = noImage;
@@ -33,7 +26,7 @@ export default function MovieCard({ item, category, mediaType }) {
             {item.name || item.title}
           </h3>
           <span className="flex gap-3 items-center text-yellow-400 mt-1 ">
-            <AiFillStar /> <p>{item.vote_average?.toFixed(1)} / 10</p>
+            <AiFillStar /> <p>{item.rating} / 10</p>
           </span>
         </div>
       </div>
