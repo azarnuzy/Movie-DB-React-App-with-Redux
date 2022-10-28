@@ -42,22 +42,6 @@ export const loadMoreFetchMovies = createAsyncThunk(
   }
 );
 
-export const fetchDetailMovie = createAsyncThunk(
-  'movies/fetchDetailMovie',
-  async (cate, id, params) => {
-    try {
-      const params = { api_key: apiConfig.apiKey };
-      const response = await axios.get(
-        `${apiConfig.baseUrl}/${category[cate]}/${id}`
-      );
-      window.scrollTo(0, 0);
-      return response;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-);
-
 const moviesSlice = createSlice({
   name: 'movies',
   initialState,
@@ -83,7 +67,7 @@ const moviesSlice = createSlice({
       })
       .addCase(loadMoreFetchMovies.fulfilled, (state, action) => {
         state.loadingStatus = 'succeeded';
-        console.log(action.payload);
+        // console.log(action.payload);
         state.movies = [...state.movies, ...action.payload.results];
         // console.log(state.movies);
         state.page += 1;

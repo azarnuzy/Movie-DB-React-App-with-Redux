@@ -31,6 +31,7 @@ export default function CategoryList({ category }) {
 
   useEffect(() => {
     dispatch(fetchMoviesByGenres(id));
+    window.scrollTo(0, 0);
   }, [dispatch, id]);
 
   const onLoadMoreClicked = () => {

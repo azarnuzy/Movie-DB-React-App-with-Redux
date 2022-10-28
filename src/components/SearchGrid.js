@@ -19,7 +19,7 @@ export default function SearchGrid() {
   const dispatch = useDispatch();
   const { category, keyword } = useParams();
 
-  console.log(category);
+  // console.log(category);
   let movies = useSelector(selectAllMovies);
   const moviesStatus = useSelector(getMoviesStatus);
   const moviesError = useSelector(getMoviesError);
@@ -28,7 +28,7 @@ export default function SearchGrid() {
   const page = useSelector(getPage);
   const totalPage = useSelector(getTotalPages);
 
-  console.log(moviesStatus);
+  // console.log(moviesStatus);
 
   useEffect(() => {
     dispatch(searchMoviesByInput({ category, keyword }));

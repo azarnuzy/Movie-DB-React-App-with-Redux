@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { AiFillStar } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import apiConfig from '../api/apiConfig';
 import tmdbApi from '../api/tmdbApi';
 import { TrailerButton } from '../components/Button';
 import MovieLists from '../components/MovieLists';
+import {
+  fetchDetailMovie,
+  getDetailError,
+  selectDetail,
+  selectDetailStatus,
+} from '../features/detail/detailSlice';
 
 export default function Detail() {
+  const dispatch = useDispatch();
+
   let { category, id } = useParams();
-  const [item, setItem] = useState(null);
+  const item = useSelector(selectDetail);
+  const detailStatus = useSelector(selectDetailStatus);
+  const detailError = useSelector(getDetailError);
 
   useEffect(() => {
-    try {
-      const getDetail = async () => {
-        const params = { api_key: apiConfig.apiKey };
-        const response = await tmdbApi.detail(category, id, { params: params });
-        setItem(response);
-        window.scrollTo(0, 0);
-      };
+    dispatch(fetchDetailMovie({ category, id }));
+    window.scrollTo(0, 0);
+  }, [category, dispatch, id]);
 
-      getDetail();
-    } catch (error) {}
-  }, [category, id]);
-
+  console.log(item);
   return (
     <div>
       <div className="h-[85vh]"></div>

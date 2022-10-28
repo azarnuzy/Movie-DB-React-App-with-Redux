@@ -35,12 +35,8 @@ export default function MovieGrid({ category }) {
     if (moviesStatus === 'idle') {
       dispatch(fetchMovies());
     }
+    window.scrollTo(0, 0);
   }, [moviesStatus, dispatch]);
-
-  if (keyword !== undefined) {
-    dispatch(fetchMovies(keyword));
-    keyword = undefined;
-  }
 
   const onLoadMoreClicked = () => {
     if (loadMoreStatus === 'idle') {
