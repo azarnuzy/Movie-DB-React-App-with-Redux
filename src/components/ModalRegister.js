@@ -4,6 +4,8 @@ import { AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 import { FaInfoCircle, FaCheck, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
 import Button from './Button';
+import { useDispatch } from 'react-redux';
+import { postRegister } from '../features/register/registerSlice';
 
 const EMAIL_REGEX = /^[A-Za-z0-9_!#$%&'*+\\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -34,6 +36,8 @@ export default function ModalRegister({ handleLogin }) {
   const [success, setSuccess] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(email));
   }, [email]);
@@ -59,19 +63,12 @@ export default function ModalRegister({ handleLogin }) {
 
     try {
       setSuccess(true);
-      const response = await axios.post(
-        'https://notflixtv.herokuapp.com/api/v1/users',
-        {
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          password: pwd,
-          password_confirmation: pwd,
-        }
-      );
+
+      dispatch(postRegister({ firstName, lastName, email, pwd, matchPwd }));
+
       setIsLogin(true);
       closeModal();
-      localStorage.setItem('user-info', JSON.stringify(response?.data));
+
       // console.log(JSON.stringify(response?.data));
       handleLogin();
       setFirstName('');

@@ -14,6 +14,8 @@ import ModalLogin from './ModalLogin';
 import MenuProfile from './MenuProfile';
 import { Menu } from '@headlessui/react';
 import { useGoogleLogin } from '@react-oauth/google';
+import { useSelector } from 'react-redux';
+import { selectLogin } from '../features/login/loginSlice';
 
 export default function Navbar() {
   const isSmallWidth = useMediaQuery({ query: '(min-width: 640px)' });
@@ -24,6 +26,8 @@ export default function Navbar() {
   const [isLogin, setIsLogin] = useState(false);
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
+
+  const user = useSelector(selectLogin) || '';
 
   const category =
     page.pathname.indexOf('/tv') >= 0
@@ -42,10 +46,15 @@ export default function Navbar() {
   }, []);
 
   const handleLogin = () => {
-    const data = JSON.parse(localStorage.getItem('user-info')).data;
-    setIsLogin(true);
-    setFirstName(data.first_name || 'Google');
-    setLastName(data.last_name || 'User');
+    if (localStorage.getItem('user-info')) {
+      const data = JSON.parse(localStorage.getItem('user-info')).data;
+      setIsLogin(true);
+      setFirstName(data.first_name || 'Google');
+      setLastName(data.last_name || 'User');
+    } else {
+      setFirstName(user?.first_name);
+      setFirstName(user?.last_name);
+    }
   };
 
   const handleLogout = () => {

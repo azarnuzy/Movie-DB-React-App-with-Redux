@@ -1,5 +1,6 @@
 const apiConfig = {
   baseUrl: 'https://api.themoviedb.org/3/',
+  userUrl: 'https://notflixtv.herokuapp.com/api/v1/users/',
   apiKey: '723efb5ac2ef3c9278d3e18eb6184aa3',
   clientId:
     '907788144298-3e4o1rkr1jpq5k9lduqs417ij2r061jk.apps.googleusercontent.com',

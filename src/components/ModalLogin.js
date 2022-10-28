@@ -6,6 +6,12 @@ import {
   AiOutlineEyeInvisible,
   AiOutlineMail,
 } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  postLogin,
+  selectLogin,
+  selectLoginStatus,
+} from '../features/login/loginSlice';
 
 import Button from './Button';
 
@@ -16,6 +22,11 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
   const [, setErrMsg] = useState('');
   const [success, setSuccess] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+
+  const dispatch = useDispatch();
+  const userLogin = useSelector(selectLogin);
+
+  console.log(userLogin);
 
   function closeModal() {
     setIsOpen(false);
@@ -34,12 +45,8 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
 
     try {
       setSuccess(true);
-      const response = await axios.post(
-        'https://notflixtv.herokuapp.com/api/v1/users/login',
-        { email: user, password: password }
-      );
 
-      localStorage.setItem('user-info', JSON.stringify(response?.data));
+      dispatch(postLogin({ user, password: password }));
 
       setIsLogin(true);
       // console.log(JSON.stringify(response?.data));
