@@ -7,10 +7,8 @@ import { Autoplay } from 'swiper';
 import 'swiper/css';
 
 import { useWindowWidth } from '@react-hook/window-size';
-import apiConfig from '../api/apiConfig';
-import tmdbApi from '../api/tmdbApi';
 import MovieCard from './MovieCard';
-import { Link } from 'react-router-dom';
+
 import {
   fetchMovies,
   getMoviesError,
@@ -45,10 +43,6 @@ export default function MovieLists({ category, type, id }) {
       return 2;
     }
   };
-
-  if (moviesStatus === 'succeeded') {
-    movies = movies.docs;
-  }
 
   return (
     <div className="w-full">

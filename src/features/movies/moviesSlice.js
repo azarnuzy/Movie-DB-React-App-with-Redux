@@ -1,16 +1,25 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import apiConfig from '../../api/apiConfig';
+import { category } from '../../api/tmdbApi';
 
 const initialState = {
   movies: [],
   status: 'idle',
+  loadingStatus: 'idle',
+  page: 1,
+  total_pages: 0,
   error: null,
 };
 
 export const fetchMovies = createAsyncThunk('movies/fetchMovies', async () => {
   try {
-    const response = await axios.get(`${apiConfig.baseUrl}/movies`);
+    let response = null;
+    const params = { api_key: apiConfig.apiKey };
+    response = await axios.get(`${apiConfig.baseUrl}/movie/popular`, {
+      params,
+    });
+
     return response.data;
   } catch (error) {
     console.error(error);
@@ -21,12 +30,30 @@ export const loadMoreFetchMovies = createAsyncThunk(
   'movies/loadMoreFetchMovies',
   async (page) => {
     try {
-      const response = await axios.get(`${apiConfig.baseUrl}/movies`, {
-        page: page + 1,
+      let response = null;
+      response = await axios.get(`${apiConfig.baseUrl}/movie/popular`, {
+        params: { api_key: apiConfig.apiKey, page: page + 1 },
       });
+
       return response.data;
     } catch (err) {
       console.error(err);
+    }
+  }
+);
+
+export const fetchDetailMovie = createAsyncThunk(
+  'movies/fetchDetailMovie',
+  async (cate, id, params) => {
+    try {
+      const params = { api_key: apiConfig.apiKey };
+      const response = await axios.get(
+        `${apiConfig.baseUrl}/${category[cate]}/${id}`
+      );
+      window.scrollTo(0, 0);
+      return response;
+    } catch (error) {
+      console.error(error);
     }
   }
 );
@@ -43,21 +70,26 @@ const moviesSlice = createSlice({
       .addCase(fetchMovies.fulfilled, (state, action) => {
         state.status = 'succeeded';
         // console.log(action.payload.data);
-        state.movies = action.payload.data;
+        state.movies = action.payload.results;
+        state.page = 1;
+        state.total_pages = action.payload.total_pages;
       })
       .addCase(fetchMovies.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
       .addCase(loadMoreFetchMovies.pending, (state, action) => {
-        state.status = 'loading-loadMore';
+        state.loadingStatus = 'loading';
       })
       .addCase(loadMoreFetchMovies.fulfilled, (state, action) => {
-        state.status = 'succeeded-loadMore';
-        state.movies.push(action.payload.data);
+        state.loadingStatus = 'succeeded';
+        console.log(action.payload);
+        state.movies = [...state.movies, ...action.payload.results];
+        // console.log(state.movies);
+        state.page += 1;
       })
       .addCase(loadMoreFetchMovies.rejected, (state, action) => {
-        state.status = action.error.message;
+        state.loadingStatus = action.error.message;
       });
   },
 });
@@ -66,6 +98,9 @@ export const selectAllMovies = (state) => state.movies.movies;
 export const getMoviesStatus = (state) => state.movies.status;
 export const getMoviesError = (state) => state.movies.error;
 
-export const getLoadMoreMovies = (state) => state.movies;
+export const getLoadMoreStatus = (state) => state.movies.loadingStatus;
+
+export const getPage = (state) => state.movies.page;
+export const getTotalPages = (state) => state.movies.total_pages;
 
 export default moviesSlice.reducer;

@@ -16,10 +16,6 @@ export default function TitleSection({ children, section, destination }) {
     link = '/movie';
   }
 
-  if (destination === 'allTv') {
-    link = '/tv';
-  }
-
   return (
     <div
       className={`flex text-lg  mb-4 justify-between mx-2 ${mt} font-semibold mt-4 `}

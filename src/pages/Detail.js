@@ -25,7 +25,7 @@ export default function Detail() {
 
   return (
     <div>
-      <div className="h-[95vh]"></div>
+      <div className="h-[85vh]"></div>
       <div className="absolute top-0 left-0 w-full">
         {item && (
           <div className="w-full h-[100vh] relative">
@@ -59,8 +59,6 @@ export default function Detail() {
           </div>
         )}
       </div>
-      <h2 className="font-bold mb-3 sm:text-2xl">Similar Movie</h2>
-      {item && <MovieLists category={category} type="similar" id={item.id} />}
     </div>
   );
 }

@@ -10,7 +10,10 @@ const initialState = {
 
 export const fetchGenres = createAsyncThunk('genres/fetchGenres', async () => {
   try {
-    const response = await axios.get(`${apiConfig.baseUrl}/movies/genres`);
+    const params = { api_key: apiConfig.apiKey };
+    const response = await axios.get(`${apiConfig.baseUrl}/genre/movie/list`, {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error(error);
@@ -28,8 +31,8 @@ const genresSlice = createSlice({
       })
       .addCase(fetchGenres.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        console.log(action.payload.data);
-        state.genres = action.payload.data;
+        console.log(action.payload);
+        state.genres = action.payload.genres;
       })
       .addCase(fetchGenres.rejected, (state, action) => {
         state.status = 'failed';

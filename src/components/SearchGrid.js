@@ -6,19 +6,20 @@ import PageHeader from '../components/PageHeader';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchMoviesByGenres,
   getLoadMoreStatus,
   getMoviesError,
   getMoviesStatus,
   getPage,
   getTotalPages,
-  loadMoreFetchMoviesByGenres,
+  loadMoreSearchByInput,
+  searchMoviesByInput,
   selectAllMovies,
 } from '../features/search/searchSlice';
-export default function CategoryList({ category }) {
+export default function SearchGrid() {
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { category, keyword } = useParams();
 
+  console.log(category);
   let movies = useSelector(selectAllMovies);
   const moviesStatus = useSelector(getMoviesStatus);
   const moviesError = useSelector(getMoviesError);
@@ -30,11 +31,11 @@ export default function CategoryList({ category }) {
   console.log(moviesStatus);
 
   useEffect(() => {
-    dispatch(fetchMoviesByGenres(id));
-  }, [dispatch, id]);
+    dispatch(searchMoviesByInput({ category, keyword }));
+  }, [dispatch, category, keyword]);
 
   const onLoadMoreClicked = () => {
-    dispatch(loadMoreFetchMoviesByGenres(id, page));
+    dispatch(loadMoreSearchByInput({ category, keyword, page }));
   };
 
   return (

@@ -5,8 +5,8 @@ import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
-import MoviesList from './features/movies/MoviesList';
-import GenresList from './features/genres/GenresList';
+import { fetchGenres } from './features/genres/genresSlice';
+import { fetchMovies } from './features/movies/moviesSlice';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(

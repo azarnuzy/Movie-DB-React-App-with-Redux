@@ -33,31 +33,15 @@ export default function Slider() {
   }, [moviesStatus, dispatch]);
 
   if (moviesStatus === 'succeeded') {
-    movies = movies.docs.slice(2, 5);
+    movies = movies.slice(2, 5);
   }
 
-  const [movieItems, setMovieItems] = useState([]);
   const pagination = {
     clickable: true,
     renderBullet: function (index, className) {
       return `<span class="border-0 ${className}"></span>`;
     },
   };
-
-  // useEffect(() => {
-  //   const getMovies = async () => {
-  //     const params = { api_key: apiConfig.apiKey, page: 1 };
-  //     try {
-  //       const response = await tmdbApi.getMoviesList(movieType.popular, {
-  //         params,
-  //       });
-  //       setMovieItems(response.results.slice(1, 4));
-  //     } catch {
-  //       console.log('error');
-  //     }
-  //   };
-  //   getMovies();
-  // }, []);
 
   return (
     <div className="absolute top-0 left-0 w-full">
@@ -72,7 +56,9 @@ export default function Slider() {
         modules={[EffectFade, Autoplay, Pagination]}
       >
         {movies.map((item, i) => {
-          const background = apiConfig.originalImage(item.poster);
+          const background = apiConfig.originalImage(
+            item.backdrop_path ? item.backdrop_path : item.poster_path
+          );
           return (
             <SwiperSlide key={i}>
               <div className="w-full h-[100vh] relative">
@@ -85,9 +71,9 @@ export default function Slider() {
                 <div className="h-[100vh] transform translate-y-[40%] text-white mx-4 lg:max-w-5xl lg:mx-auto">
                   <h2 className="text-3xl font-bold mb-4">{item.title}</h2>
                   <p className=" text-md mb-3">
-                    {item.synopsis.length > 200
-                      ? `${item.synopsis.substring(0, 200)}...`
-                      : item.synopsis}
+                    {item.overview.length > 200
+                      ? `${item.overview.substring(0, 200)}...`
+                      : item.overview}
                   </p>
                   <TrailerButton item={item} />
                 </div>

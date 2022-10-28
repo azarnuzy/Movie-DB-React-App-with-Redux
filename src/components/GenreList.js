@@ -9,7 +9,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper';
 // Import Swiper styles
 import 'swiper/css';
-import apiConfig from '../api/apiConfig';
+
 import {
   fetchGenres,
   getGenresError,
@@ -44,10 +44,6 @@ export function GenreList({ category, type }) {
     }
   };
 
-  if (genresStatus === 'succeeded') {
-    console.log(genres);
-  }
-
   return (
     <div className="w-full mx-2">
       <Swiper
@@ -62,7 +58,7 @@ export function GenreList({ category, type }) {
               to={`/${category}/genres/${item.id}`}
               className="flex justify-center py-3 px-1 border-lightRed border-solid rounded-full border text-lightRed whitespace-nowrap overflow-hidden"
             >
-              {item}
+              {item.name}
             </Link>
           </SwiperSlide>
         ))}
