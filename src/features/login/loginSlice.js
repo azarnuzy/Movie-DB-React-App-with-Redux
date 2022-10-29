@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import apiConfig from '../../api/apiConfig';
 
 const initialState = {
   login: [],
@@ -13,7 +12,6 @@ export const postLogin = createAsyncThunk(
   async ({ user, password }) => {
     try {
       let response = null;
-      const params = { email: user, password: password };
       //   console.log(params);
       response = await axios.post(
         'https://notflixtv.herokuapp.com/api/v1/users/login',

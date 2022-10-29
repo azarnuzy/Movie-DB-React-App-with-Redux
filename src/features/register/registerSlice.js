@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import apiConfig from '../../api/apiConfig';
 
 const initialState = {
   register: [],
@@ -20,10 +19,11 @@ export const postRegister = createAsyncThunk(
           last_name: lastName,
           email: email,
           password: pwd,
-          password_confirmation: matchPwd,
+          password_confirmation: pwd,
         }
       );
       //   console.log(response);
+      console.log(response);
       localStorage.setItem('user-info', JSON.stringify(response?.data));
       return response?.data;
     } catch (error) {

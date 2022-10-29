@@ -1,5 +1,4 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
 import { Fragment, useState, useEffect } from 'react';
 import {
   AiFillGoogleCircle,
@@ -7,11 +6,7 @@ import {
   AiOutlineMail,
 } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  postLogin,
-  selectLogin,
-  selectLoginStatus,
-} from '../features/login/loginSlice';
+import { postLogin, selectLoginStatus } from '../features/login/loginSlice';
 
 import Button from './Button';
 
@@ -20,13 +15,9 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [, setErrMsg] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
 
   const dispatch = useDispatch();
-  const userLogin = useSelector(selectLogin);
-
-  console.log(userLogin);
+  const loginStatus = useSelector(selectLoginStatus);
 
   function closeModal() {
     setIsOpen(false);
@@ -44,14 +35,8 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
     e.preventDefault();
 
     try {
-      setSuccess(true);
-
       dispatch(postLogin({ user, password: password }));
 
-      setIsLogin(true);
-      // console.log(JSON.stringify(response?.data));
-      // console.log(user);
-      // console.log(password);
       handleLogin();
       setUser('');
       setPassword('');
@@ -101,7 +86,7 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  {!isLogin && success && (
+                  {loginStatus === 'loading' && (
                     <div className="flex items-center  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  justify-center space-x-2">
                       <div className="w-4 h-4 rounded-full animate-pulse dark:bg-violet-400"></div>
                       <div className="w-4 h-4 rounded-full animate-pulse dark:bg-violet-400"></div>

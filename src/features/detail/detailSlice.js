@@ -39,7 +39,7 @@ const detailSlice = createSlice({
       })
       .addCase(fetchDetailMovie.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        console.log(action.payload);
+        // console.log(action.payload);
         state.detail = action.payload;
       })
       .addCase(fetchDetailMovie.rejected, (state, action) => {

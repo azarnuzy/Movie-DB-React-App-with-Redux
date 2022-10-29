@@ -17,18 +17,6 @@ export default function Home() {
         Genres Movies
       </TitleSection>
       <GenreList category={category.movie} />
-      {/* <TitleSection section={'category'} destination={'genres'}>
-        Movie Category
-      </TitleSection>
-      <GenreList category={category.movie} type={'movie'} />
-      <TitleSection section={'homePopularTV'} destination={'allTv'}>
-        Popular TV Shows
-      </TitleSection>
-      <MovieLists category={category.tv} type={tvType.popular} />
-      <TitleSection section={'category'} destination={'genres'}>
-        TV Category
-      </TitleSection>
-      <GenreList category={category.tv} type={'tv'} /> */}
     </div>
   );
 }

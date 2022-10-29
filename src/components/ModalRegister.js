@@ -2,10 +2,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState, useEffect, useRef } from 'react';
 import { AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 import { FaInfoCircle, FaCheck, FaTimes } from 'react-icons/fa';
-import axios from 'axios';
 import Button from './Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { postRegister } from '../features/register/registerSlice';
+import { selectLoginStatus } from '../features/login/loginSlice';
 
 const EMAIL_REGEX = /^[A-Za-z0-9_!#$%&'*+\\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -33,10 +33,8 @@ export default function ModalRegister({ handleLogin }) {
 
   const [errMsg, setErrMsg] = useState('');
 
-  const [success, setSuccess] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
-
   const dispatch = useDispatch();
+  const loginStatus = useSelector(selectLoginStatus);
 
   useEffect(() => {
     setValidEmail(EMAIL_REGEX.test(email));
@@ -62,11 +60,8 @@ export default function ModalRegister({ handleLogin }) {
     }
 
     try {
-      setSuccess(true);
-
       dispatch(postRegister({ firstName, lastName, email, pwd, matchPwd }));
 
-      setIsLogin(true);
       closeModal();
 
       // console.log(JSON.stringify(response?.data));
@@ -130,7 +125,7 @@ export default function ModalRegister({ handleLogin }) {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  {!isLogin && success && (
+                  {loginStatus === 'loading' && (
                     <div class="flex items-center  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  justify-center space-x-2">
                       <div class="w-4 h-4 rounded-full animate-pulse dark:bg-violet-400"></div>
                       <div class="w-4 h-4 rounded-full animate-pulse dark:bg-violet-400"></div>

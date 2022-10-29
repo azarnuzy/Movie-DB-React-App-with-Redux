@@ -15,7 +15,11 @@ import MenuProfile from './MenuProfile';
 import { Menu } from '@headlessui/react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { useSelector } from 'react-redux';
-import { selectLogin } from '../features/login/loginSlice';
+import { selectLogin, selectLoginStatus } from '../features/login/loginSlice';
+import {
+  selectRegister,
+  selectRegisterStatus,
+} from '../features/register/registerSlice';
 
 export default function Navbar() {
   const isSmallWidth = useMediaQuery({ query: '(min-width: 640px)' });
@@ -28,6 +32,10 @@ export default function Navbar() {
   const [lastName, setLastName] = useState();
 
   const user = useSelector(selectLogin) || '';
+  const loginStatus = useSelector(selectLoginStatus);
+
+  const registerUser = useSelector(selectRegister);
+  const registerStatus = useSelector(selectRegisterStatus);
 
   const category =
     page.pathname.indexOf('/tv') >= 0
@@ -42,8 +50,22 @@ export default function Navbar() {
       setIsLogin(true);
       setFirstName(data.first_name || 'Google');
       setLastName(data.last_name || 'User');
+    } else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
+      // console.log(user);
+      console.log(registerStatus);
+      setIsLogin(true);
+      setFirstName(user.first_name || registerUser?.first_name);
+      setLastName(user.last_name || registerUser?.last_name);
     }
-  }, []);
+  }, [
+    loginStatus,
+    registerStatus,
+    registerUser.first_name,
+    registerUser.last_name,
+    user,
+    user.first_name,
+    user.last_name,
+  ]);
 
   const handleLogin = () => {
     if (localStorage.getItem('user-info')) {
@@ -51,9 +73,9 @@ export default function Navbar() {
       setIsLogin(true);
       setFirstName(data.first_name || 'Google');
       setLastName(data.last_name || 'User');
-    } else {
-      setFirstName(user?.first_name);
-      setFirstName(user?.last_name);
+    } else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
+      setFirstName(user?.first_name || registerUser?.first_name);
+      setFirstName(user?.last_name || registerUser?.last_name);
     }
   };
 
