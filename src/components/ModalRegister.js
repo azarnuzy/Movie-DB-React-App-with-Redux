@@ -6,6 +6,7 @@ import Button from './Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { postRegister } from '../features/register/registerSlice';
 import { selectLoginStatus } from '../features/login/loginSlice';
+import { registerWithEmailAndPassword } from '../firebase';
 
 const EMAIL_REGEX = /^[A-Za-z0-9_!#$%&'*+\\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -18,6 +19,8 @@ export default function ModalRegister({ handleLogin }) {
   const [firstName, setFirstName] = useState('');
 
   const [lastName, setLastName] = useState('');
+
+  const [name, setName] = useState('');
 
   const [email, setEmail] = useState('');
   const [validEmail, setValidEmail] = useState(false);
@@ -47,7 +50,8 @@ export default function ModalRegister({ handleLogin }) {
 
   useEffect(() => {
     setErrMsg('');
-  }, [firstName, lastName, email, pwd, matchPwd]);
+    setName(`${firstName} ${lastName}`);
+  }, [firstName, lastName]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +64,18 @@ export default function ModalRegister({ handleLogin }) {
     }
 
     try {
-      dispatch(postRegister({ firstName, lastName, email, pwd, matchPwd }));
+      // dispatch(postRegister({ firstName, lastName, email, pwd, matchPwd }));
+
+      registerWithEmailAndPassword(name, email, pwd);
+
+      localStorage.setItem(
+        'user-info',
+        JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+        })
+      );
 
       closeModal();
 

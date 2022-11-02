@@ -10,6 +10,9 @@ import { postLogin, selectLoginStatus } from '../features/login/loginSlice';
 
 import Button from './Button';
 
+import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
 export default function ModalLogin({ handleLogin, loginGoogle }) {
   let [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState('');
@@ -35,7 +38,8 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
     e.preventDefault();
 
     try {
-      dispatch(postLogin({ user, password: password }));
+      logInWithEmailAndPassword(user, password);
+      // dispatch(postLogin({ user, password: password }));
 
       handleLogin();
       setUser('');
@@ -139,9 +143,16 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
                       >
                         Login
                       </Button>
-                      <button
+                      {/* <button
                         className="px-3 py-2 rounded-full border-solid border-lightRed transition duration-300 bg-lightRed font-medium text-white  hover:opacity-80 border flex items-center"
                         onClick={() => loginGoogle()}
+                      >
+                        <AiFillGoogleCircle className=" mr-2 text-xl" /> Sign in
+                        with Google
+                      </button> */}
+                      <button
+                        className="px-3 py-2 rounded-full border-solid border-lightRed transition duration-300 bg-lightRed font-medium text-white  hover:opacity-80 border flex items-center"
+                        onClick={signInWithGoogle}
                       >
                         <AiFillGoogleCircle className=" mr-2 text-xl" /> Sign in
                         with Google
