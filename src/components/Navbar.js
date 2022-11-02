@@ -52,7 +52,7 @@ export default function Navbar() {
       setLastName(data.last_name || 'User');
     } else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
       // console.log(user);
-      console.log(registerStatus);
+      console.log(loginStatus);
       setIsLogin(true);
       setFirstName(user.first_name || registerUser?.first_name);
       setLastName(user.last_name || registerUser?.last_name);

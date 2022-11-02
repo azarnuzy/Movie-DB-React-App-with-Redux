@@ -17,7 +17,10 @@ export const postLogin = createAsyncThunk(
         'https://notflixtv.herokuapp.com/api/v1/users/login',
         { email: user, password: password }
       );
-
+      console.log(response.data);
+      if (response.data) {
+        localStorage.setItem('user-info', JSON.stringify(response.data));
+      }
       return response.data;
     } catch (error) {
       console.error(error);
@@ -35,9 +38,11 @@ const loginSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(postLogin.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-
-        localStorage.setItem('user-info', JSON.stringify(action.payload));
+        if (action.payload !== undefined) {
+          state.status = 'succeeded';
+        } else {
+          state.status = 'failed';
+        }
         state.login = action.payload;
       })
       .addCase(postLogin.rejected, (state, action) => {
