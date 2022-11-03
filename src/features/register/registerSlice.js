@@ -19,7 +19,7 @@ export const postRegister = createAsyncThunk(
           last_name: lastName,
           email: email,
           password: pwd,
-          password_confirmation: pwd,
+          password_confirmation: matchPwd,
         }
       );
       //   console.log(response);
@@ -35,7 +35,11 @@ export const postRegister = createAsyncThunk(
 const registerSlice = createSlice({
   name: 'register',
   initialState,
-  reducers: {},
+  reducers: {
+    registerWithFirebase: (state, action) => {
+      state.register = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(postRegister.pending, (state, action) => {
@@ -56,5 +60,7 @@ const registerSlice = createSlice({
 export const selectRegister = (state) => state.register.register;
 export const selectRegisterStatus = (state) => state.register.status;
 export const getRegisterError = (state) => state.register.error;
+
+export const { registerWithFirebase } = registerSlice.actions;
 
 export default registerSlice.reducer;

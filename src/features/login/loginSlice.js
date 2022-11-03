@@ -31,7 +31,11 @@ export const postLogin = createAsyncThunk(
 const loginSlice = createSlice({
   name: 'login',
   initialState,
-  reducers: {},
+  reducers: {
+    loginWithFireBase: (state, action) => {
+      state.login = action.payload;
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(postLogin.pending, (state, action) => {
@@ -55,5 +59,7 @@ const loginSlice = createSlice({
 export const selectLogin = (state) => state.login.login;
 export const selectLoginStatus = (state) => state.login.status;
 export const getLoginError = (state) => state.login.error;
+
+export const { loginWithFireBase } = loginSlice.actions;
 
 export default loginSlice.reducer;

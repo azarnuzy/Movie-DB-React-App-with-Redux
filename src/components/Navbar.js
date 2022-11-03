@@ -20,6 +20,7 @@ import {
   selectRegister,
   selectRegisterStatus,
 } from '../features/register/registerSlice';
+import { logout } from '../firebase';
 
 export default function Navbar() {
   const isSmallWidth = useMediaQuery({ query: '(min-width: 640px)' });
@@ -50,13 +51,14 @@ export default function Navbar() {
       setIsLogin(true);
       setFirstName(data.first_name || 'Google');
       setLastName(data.last_name || 'User');
-    } else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
-      // console.log(user);
-      console.log(loginStatus);
-      setIsLogin(true);
-      setFirstName(user.first_name || registerUser?.first_name);
-      setLastName(user.last_name || registerUser?.last_name);
     }
+    // else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
+    //   // console.log(user);
+    //   console.log(loginStatus);
+    //   setIsLogin(true);
+    //   setFirstName(user.first_name || registerUser?.first_name);
+    //   setLastName(user.last_name || registerUser?.last_name);
+    // }
   }, [
     loginStatus,
     registerStatus,
@@ -73,13 +75,15 @@ export default function Navbar() {
       setIsLogin(true);
       setFirstName(data.first_name || 'Google');
       setLastName(data.last_name || 'User');
-    } else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
-      setFirstName(user?.first_name || registerUser?.first_name);
-      setFirstName(user?.last_name || registerUser?.last_name);
     }
+    // else if (loginStatus === 'succeeded' || registerStatus === 'succeeded') {
+    //   setFirstName(user?.first_name || registerUser?.first_name);
+    //   setFirstName(user?.last_name || registerUser?.last_name);
+    // }
   };
 
   const handleLogout = () => {
+    logout();
     setIsLogin(false);
     setFirstName('');
     setLastName('');

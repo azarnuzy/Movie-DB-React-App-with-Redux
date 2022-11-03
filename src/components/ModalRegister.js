@@ -4,14 +4,44 @@ import { AiOutlineMail, AiOutlineUser } from 'react-icons/ai';
 import { FaInfoCircle, FaCheck, FaTimes } from 'react-icons/fa';
 import Button from './Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { postRegister } from '../features/register/registerSlice';
+import {
+  postRegister,
+  registerWithFirebase,
+} from '../features/register/registerSlice';
 import { selectLoginStatus } from '../features/login/loginSlice';
 import { registerWithEmailAndPassword } from '../firebase';
+
+import { auth, db, logout } from '../firebase';
+import { query, collection, getDocs, where } from 'firebase/firestore';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const EMAIL_REGEX = /^[A-Za-z0-9_!#$%&'*+\\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 export default function ModalRegister({ handleLogin }) {
+  const [user, loading, error] = useAuthState(auth);
+  const [name, setName] = useState('');
+  const fetchUserName = async () => {
+    try {
+      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+      setName(data.name);
+      dispatch(registerWithFirebase(data));
+      const firstName1 = data.name.split(' ')[0];
+      const lastName1 = data.name.split(' ')[1];
+      localStorage.setItem(
+        'user-info',
+        JSON.stringify({
+          data: { first_name: firstName1, last_name: lastName1 },
+        })
+      );
+    } catch (err) {
+      console.error(err);
+      alert('An error occured while fetching user data');
+    }
+  };
+
   let [isOpen, setIsOpen] = useState(false);
 
   const errRef = useRef();
@@ -20,7 +50,7 @@ export default function ModalRegister({ handleLogin }) {
 
   const [lastName, setLastName] = useState('');
 
-  const [name, setName] = useState('');
+  const [namePayload, setNamePayload] = useState('');
 
   const [email, setEmail] = useState('');
   const [validEmail, setValidEmail] = useState(false);
@@ -50,7 +80,7 @@ export default function ModalRegister({ handleLogin }) {
 
   useEffect(() => {
     setErrMsg('');
-    setName(`${firstName} ${lastName}`);
+    setNamePayload(`${firstName} ${lastName}`);
   }, [firstName, lastName]);
 
   const handleSubmit = async (e) => {
@@ -66,17 +96,7 @@ export default function ModalRegister({ handleLogin }) {
     try {
       // dispatch(postRegister({ firstName, lastName, email, pwd, matchPwd }));
 
-      registerWithEmailAndPassword(name, email, pwd);
-
-      localStorage.setItem(
-        'user-info',
-        JSON.stringify({
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-        })
-      );
-
+      registerWithEmailAndPassword(namePayload, email, pwd);
       closeModal();
 
       // console.log(JSON.stringify(response?.data));

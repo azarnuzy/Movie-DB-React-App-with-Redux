@@ -6,21 +6,60 @@ import {
   AiOutlineMail,
 } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { postLogin, selectLoginStatus } from '../features/login/loginSlice';
+import {
+  loginWithFireBase,
+  postLogin,
+  selectLoginStatus,
+} from '../features/login/loginSlice';
 
 import Button from './Button';
 
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from '../firebase';
+import {
+  auth,
+  db,
+  logout,
+  logInWithEmailAndPassword,
+  signInWithGoogle,
+} from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { query, collection, getDocs, where } from 'firebase/firestore';
 
 export default function ModalLogin({ handleLogin, loginGoogle }) {
   let [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [, setErrMsg] = useState('');
 
   const dispatch = useDispatch();
   const loginStatus = useSelector(selectLoginStatus);
+
+  const [user, loading, error] = useAuthState(auth);
+  const [name, setName] = useState('');
+
+  const fetchUserName = async () => {
+    try {
+      const q = query(collection(db, 'users'), where('uid', '==', user?.uid));
+      const doc = await getDocs(q);
+      const data = doc.docs[0].data();
+      setName(data.name);
+      dispatch(loginWithFireBase(data));
+      const firstName = data.name.split(' ')[0];
+      const lastName = data.name.split(' ')[1];
+      localStorage.setItem(
+        'user-info',
+        JSON.stringify({ data: { first_name: firstName, last_name: lastName } })
+      );
+    } catch (err) {
+      console.error(err);
+      alert('An error occured while fetching user data');
+    }
+  };
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) return;
+    fetchUserName();
+  }, [user, loading]);
 
   function closeModal() {
     setIsOpen(false);
@@ -32,23 +71,22 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, password]);
+  }, [email, password]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      logInWithEmailAndPassword(user, password);
-      // dispatch(postLogin({ user, password: password }));
-
+      logInWithEmailAndPassword(email, password);
+      // dispatch(postLogin({ email, password: password }));
       handleLogin();
-      setUser('');
+      setEmail('');
       setPassword('');
     } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
       } else if (err.response?.status === 400) {
-        setErrMsg('Missing Username or Password');
+        setErrMsg('Missing username or Password');
       } else if (err.response?.status === 401) {
         setErrMsg('Unauthorized');
       } else {
@@ -111,8 +149,8 @@ export default function ModalLogin({ handleLogin, loginGoogle }) {
                         type="email"
                         placeholder="Email Address"
                         id="email"
-                        onChange={(e) => setUser(e.target.value)}
-                        value={user}
+                        onChange={(e) => setEmail(e.target.value)}
+                        value={email}
                         autoComplete="off"
                         required
                       />
